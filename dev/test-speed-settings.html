@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UME - Speed Settings Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            background: #fafafa;
+        }
+        .expected { 
+            background: #e8f5e8; 
+            border-color: #4caf50; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .settings-display { 
+            background: #f0f8ff; 
+            border: 1px solid #87ceeb; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-family: monospace; 
+            font-size: 14px;
+        }
+        video { 
+            width: 100%; 
+            max-width: 400px; 
+            margin: 10px 0; 
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        button { 
+            padding: 10px 15px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 5px; 
+            background: #2196f3; 
+            color: white; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:hover { background: #1976d2; }
+        button.action { background: #ff9800; }
+        button.action:hover { background: #f57c00; }
+        h2 { color: #1976d2; border-bottom: 2px solid #2196f3; padding-bottom: 5px; }
+        h3 { color: #333; }
+        .status { font-weight: bold; padding: 5px; border-radius: 3px; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎛️ UME Speed Settings Test</h1>
+        <p><strong>This page tests that changing video speeds doesn't affect the default speed setting.</strong></p>
+
+        <div class="test-section">
+            <h2>Current Settings</h2>
+            <div id="settingsDisplay" class="settings-display">Loading settings...</div>
+            <button onclick="refreshSettings()">🔄 Refresh Settings</button>
+            <button onclick="openOptions()">⚙️ Open Options Page</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Video 1</h2>
+            <video id="video1" controls muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <br>
+            <button onclick="playVideo('video1')">▶️ Play</button>
+            <button onclick="pauseVideo('video1')">⏸️ Pause</button>
+            <button class="action" onclick="changeSpeed('video1', 1.5)">1.5x Speed</button>
+            <button class="action" onclick="changeSpeed('video1', 2.0)">2.0x Speed</button>
+            <button class="action" onclick="changeSpeed('video1', 0.75)">0.75x Speed</button>
+            
+            <div class="expected">
+                <strong>✅ Expected:</strong> Changing this video's speed should NOT change the default speed setting in options. 
+                It should only update the "Last Used Speed" and store this video's specific speed.
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Video 2 (Different Source)</h2>
+            <video id="video2" controls muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <br>
+            <button onclick="playVideo('video2')">▶️ Play</button>
+            <button onclick="pauseVideo('video2')">⏸️ Pause</button>
+            <button class="action" onclick="changeSpeed('video2', 1.25)">1.25x Speed</button>
+            <button class="action" onclick="changeSpeed('video2', 1.75)">1.75x Speed</button>
+            <button class="action" onclick="changeSpeed('video2', 0.5)">0.5x Speed</button>
+            
+            <div class="expected">
+                <strong>✅ Expected:</strong> This video should remember its own speed independently of Video 1. 
+                The default speed setting should remain unchanged.
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Keyboard Shortcuts Test</h2>
+            <p><strong>Use these keyboard shortcuts on the videos above:</strong></p>
+            <ul>
+                <li><kbd>S</kbd> - Slower (decrease speed by 0.25x)</li>
+                <li><kbd>D</kbd> - Faster (increase speed by 0.25x)</li>
+                <li><kbd>R</kbd> - Reset (toggle between 1.0x and default speed)</li>
+                <li><kbd>G</kbd> - Fast (jump to 1.8x speed)</li>
+            </ul>
+            
+            <div class="expected">
+                <strong>✅ Expected:</strong> Keyboard shortcuts should also NOT change the default speed setting, 
+                only the per-video speeds and last used speed.
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="testResults">
+                <p>🔍 Change video speeds using buttons or keyboard shortcuts above, then check if:</p>
+                <ul>
+                    <li>Default Speed stays the same (should not change)</li>
+                    <li>Last Used Speed updates to reflect recent changes</li>
+                    <li>Per-Video Speeds stores individual speeds for each video</li>
+                    <li>Reset (R key) toggles between 1.0x and the Default Speed setting</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let settings = {};
+        
+        async function refreshSettings() {
+            const display = document.getElementById('settingsDisplay');
+            
+            try {
+                if (typeof browser !== 'undefined' || typeof chrome !== 'undefined') {
+                    const api = typeof browser !== 'undefined' ? browser : chrome;
+                    
+                    // Get settings from background script
+                    const response = await api.runtime.sendMessage({ type: 'GET_SPEED_SETTINGS' });
+                    
+                    if (response) {
+                        settings = response;
+                        
+                        display.innerHTML = `
+<strong>🎯 Default Speed:</strong> ${settings.speed}x <span style="color: #666;">(Should NEVER change from video speed adjustments)</span>
+<strong>⏮️ Last Used Speed:</strong> ${settings.lastSpeed}x <span style="color: #666;">(Updates when you change video speeds)</span>
+<strong>🔄 Remember Speed:</strong> ${settings.rememberSpeed ? 'Enabled' : 'Disabled'}
+<strong>🔒 Force Last Speed:</strong> ${settings.forceLastSavedSpeed ? 'Enabled' : 'Disabled'}
+<strong>📚 Per-Video Speeds:</strong> ${Object.keys(settings.speeds).length} videos remembered
+${Object.keys(settings.speeds).length > 0 ? 
+  Object.entries(settings.speeds).map(([src, speed]) => 
+    `  • ${src.split('/').pop().substring(0, 30)}... : ${speed}x`
+  ).join('\n') : '  (none yet)'}
+                        `;
+                    } else {
+                        throw new Error('No response from extension');
+                    }
+                } else {
+                    throw new Error('Extension APIs not available');
+                }
+            } catch (error) {
+                display.innerHTML = `❌ Error loading settings: ${error.message}`;
+            }
+        }
+
+        function playVideo(videoId) {
+            const video = document.getElementById(videoId);
+            video.play().catch(console.error);
+        }
+
+        function pauseVideo(videoId) {
+            const video = document.getElementById(videoId);
+            video.pause();
+        }
+
+        async function changeSpeed(videoId, speed) {
+            const video = document.getElementById(videoId);
+            video.playbackRate = speed;
+            
+            console.log(`Changed ${videoId} speed to ${speed}x`);
+            
+            // Wait a moment for extension to process, then refresh settings
+            setTimeout(refreshSettings, 500);
+        }
+
+        async function openOptions() {
+            if (typeof browser !== 'undefined' || typeof chrome !== 'undefined') {
+                const api = typeof browser !== 'undefined' ? browser : chrome;
+                try {
+                    await api.runtime.openOptionsPage();
+                } catch (error) {
+                    alert('Could not open options page: ' + error.message);
+                }
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            console.log('🎬 Speed settings test page loaded');
+            setTimeout(refreshSettings, 500);
+
+            // Monitor for video speed changes
+            document.querySelectorAll('video').forEach(video => {
+                video.addEventListener('ratechange', (e) => {
+                    console.log(`Video ${video.id} speed changed to ${video.playbackRate}x`);
+                    setTimeout(refreshSettings, 200);
+                });
+            });
+        });
+
+        // Auto-refresh settings every 3 seconds to show real-time changes
+        setInterval(refreshSettings, 3000);
+    </script>
+</body>
+</html>

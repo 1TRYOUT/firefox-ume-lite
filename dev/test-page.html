@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UME Extension Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .video-container {
+            margin: 10px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        video {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+        .controls {
+            margin: 10px 0;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .test-button {
+            background: #28a745;
+            font-size: 16px;
+            padding: 15px 30px;
+        }
+        .logs {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .live-indicator {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 UME Extension Test Page</h1>
+    <p>This page helps test the Ultimate Media Extension functionality, especially for tab tracking and video performance issues.</p>
+
+    <div class="test-section">
+        <h2>🔧 Quick Diagnostic Test</h2>
+        <p>Run the comprehensive diagnostic test to check extension status:</p>
+        <button class="test-button" onclick="runDiagnosticTest()">Run Diagnostic Test</button>
+        <div id="diagnostic-status" class="status info" style="display: none;">
+            Test in progress... Check console for detailed results.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📹 Video Test Elements</h2>
+        
+        <div class="video-container">
+            <h3>Regular Video (MP4)</h3>
+            <video controls>
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="controls">
+                <button onclick="testVideoSpeed(this, 0.5)">0.5x Speed</button>
+                <button onclick="testVideoSpeed(this, 1.0)">1.0x Speed</button>
+                <button onclick="testVideoSpeed(this, 1.5)">1.5x Speed</button>
+                <button onclick="testVideoSpeed(this, 2.0)">2.0x Speed</button>
+            </div>
+        </div>
+
+        <div class="video-container">
+            <h3>Simulated Livestream <span class="live-indicator">🔴 LIVE</span></h3>
+            <video controls id="livestream-video">
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="controls">
+                <button onclick="simulateLivestream()">Simulate Livestream (∞ duration)</button>
+                <button onclick="testVideoSpeed(this, 1.5)">Try Speed Change (should be blocked)</button>
+            </div>
+            <p><small>This video is modified to simulate a livestream with infinite duration.</small></p>
+        </div>
+
+        <div class="video-container">
+            <h3>Audio Element</h3>
+            <audio controls>
+                <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+                <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚡ Performance Tests</h2>
+        <div class="controls">
+            <button onclick="testMultipleSpeedChanges()">Test Rapid Speed Changes</button>
+            <button onclick="testSeekAndSpeed()">Test Seek + Speed Change</button>
+            <button onclick="testPauseResume()">Test Pause/Resume Tracking</button>
+            <button onclick="simulateTabSwitch()">Simulate Tab Switch</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Extension Status</h2>
+        <div id="extension-status">
+            <p>Loading extension status...</p>
+        </div>
+        <button onclick="updateExtensionStatus()">Refresh Status</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Test Logs</h2>
+        <div id="test-logs" class="logs">
+            Test logs will appear here...
+        </div>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <script>
+        let logContainer = document.getElementById('test-logs');
+        let statusContainer = document.getElementById('extension-status');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logContainer.textContent += logEntry;
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[TEST] ${message}`);
+        }
+
+        function clearLogs() {
+            logContainer.textContent = 'Test logs cleared...\n';
+        }
+
+        async function runDiagnosticTest() {
+            const statusDiv = document.getElementById('diagnostic-status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Running diagnostic test... Check console for detailed results.';
+
+            log('🔍 Starting comprehensive diagnostic test...');
+            
+            try {
+                // Load and execute the diagnostic script
+                const script = document.createElement('script');
+                script.src = 'test-diagnostics.js';
+                script.onload = () => {
+                    log('✅ Diagnostic test script loaded and executed');
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = 'Diagnostic test completed! Check console for detailed results.';
+                };
+                script.onerror = () => {
+                    log('❌ Failed to load diagnostic test script');
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = 'Failed to load diagnostic test script. Make sure test-diagnostics.js is accessible.';
+                };
+                document.head.appendChild(script);
+            } catch (error) {
+                log(`❌ Error running diagnostic test: ${error.message}`);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function testVideoSpeed(button, speed) {
+            const video = button.closest('.video-container').querySelector('video');
+            const isLivestream = video.duration === Infinity;
+            
+            log(`Testing speed change to ${speed}x on ${isLivestream ? 'livestream' : 'regular video'}`);
+            
+            try {
+                const oldSpeed = video.playbackRate;
+                video.playbackRate = speed;
+                
+                setTimeout(() => {
+                    const actualSpeed = video.playbackRate;
+                    if (Math.abs(actualSpeed - speed) < 0.01) {
+                        log(`✅ Speed change successful: ${oldSpeed}x → ${actualSpeed}x`);
+                    } else {
+                        log(`⚠️ Speed change partially successful: requested ${speed}x, got ${actualSpeed}x`);
+                    }
+                }, 100);
+            } catch (error) {
+                log(`❌ Speed change failed: ${error.message}`);
+            }
+        }
+
+        function simulateLivestream() {
+            const video = document.getElementById('livestream-video');
+            
+            // Override duration property to simulate livestream
+            Object.defineProperty(video, 'duration', {
+                value: Infinity,
+                writable: false
+            });
+            
+            log('🔴 Simulated livestream (duration set to Infinity)');
+            log(`Video duration: ${video.duration}`);
+        }
+
+        function testMultipleSpeedChanges() {
+            const videos = document.querySelectorAll('video');
+            log('🏃 Testing rapid speed changes...');
+            
+            let changeCount = 0;
+            const speeds = [1.0, 1.5, 2.0, 0.75, 1.25, 1.0];
+            
+            const interval = setInterval(() => {
+                if (changeCount >= speeds.length) {
+                    clearInterval(interval);
+                    log('✅ Rapid speed change test completed');
+                    return;
+                }
+                
+                videos.forEach((video, index) => {
+                    if (video.duration !== Infinity) {
+                        video.playbackRate = speeds[changeCount];
+                        log(`Video ${index} speed changed to ${speeds[changeCount]}x`);
+                    }
+                });
+                
+                changeCount++;
+            }, 500);
+        }
+
+        function testSeekAndSpeed() {
+            const videos = document.querySelectorAll('video');
+            log('⏭️ Testing seek + speed change...');
+            
+            videos.forEach((video, index) => {
+                if (video.duration !== Infinity && video.duration > 10) {
+                    video.currentTime = 5;
+                    setTimeout(() => {
+                        video.playbackRate = 1.5;
+                        log(`Video ${index} seek + speed change completed`);
+                    }, 300);
+                }
+            });
+        }
+
+        function testPauseResume() {
+            const videos = document.querySelectorAll('video');
+            log('⏸️ Testing pause/resume tracking...');
+            
+            videos.forEach((video, index) => {
+                if (!video.paused) {
+                    video.pause();
+                    log(`Video ${index} paused`);
+                    
+                    setTimeout(() => {
+                        video.play();
+                        log(`Video ${index} resumed`);
+                    }, 2000);
+                } else {
+                    video.play();
+                    log(`Video ${index} started playing`);
+                }
+            });
+        }
+
+        function simulateTabSwitch() {
+            log('🔄 Simulating tab switch (visibility change)...');
+            
+            // Simulate tab becoming hidden
+            Object.defineProperty(document, 'visibilityState', {
+                value: 'hidden',
+                writable: true
+            });
+            
+            document.dispatchEvent(new Event('visibilitychange'));
+            log('Tab marked as hidden');
+            
+            setTimeout(() => {
+                // Simulate tab becoming visible again
+                Object.defineProperty(document, 'visibilityState', {
+                    value: 'visible',
+                    writable: true
+                });
+                
+                document.dispatchEvent(new Event('visibilitychange'));
+                log('Tab marked as visible again');
+            }, 3000);
+        }
+
+        async function updateExtensionStatus() {
+            log('🔄 Updating extension status...');
+            
+            try {
+                if (typeof browser !== 'undefined' || typeof chrome !== 'undefined') {
+                    const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+                    
+                    // Get background diagnostics
+                    try {
+                        const diagnostics = await browserAPI.runtime.sendMessage({ type: 'GET_DIAGNOSTICS' });
+                        
+                        statusContainer.innerHTML = `
+                            <h3>✅ Extension Active</h3>
+                            <p><strong>Uptime:</strong> ${Math.round(diagnostics.uptime / 1000)}s</p>
+                            <p><strong>Active Tabs:</strong> ${diagnostics.activeTabsCount}</p>
+                            <p><strong>Potential Tabs:</strong> ${diagnostics.potentialTabsCount}</p>
+                            <p><strong>Extension Enabled:</strong> ${diagnostics.isExtensionEnabled ? 'Yes' : 'No'}</p>
+                            <p><strong>Total Errors:</strong> ${diagnostics.stats.errors}</p>
+                            <p><strong>Speed Changes:</strong> ${diagnostics.stats.speedChanges}</p>
+                            <p><strong>Media Events:</strong> ${diagnostics.stats.mediaStartEvents}</p>
+                        `;
+                        
+                        log('✅ Extension status updated successfully');
+                    } catch (error) {
+                        statusContainer.innerHTML = `
+                            <h3>⚠️ Extension Communication Error</h3>
+                            <p>Could not communicate with background script: ${error.message}</p>
+                        `;
+                        log(`⚠️ Background script communication failed: ${error.message}`);
+                    }
+                } else {
+                    statusContainer.innerHTML = `
+                        <h3>❌ Extension Not Detected</h3>
+                        <p>Extension APIs not available. Make sure the extension is installed and enabled.</p>
+                    `;
+                    log('❌ Extension APIs not available');
+                }
+            } catch (error) {
+                log(`❌ Error updating extension status: ${error.message}`);
+                statusContainer.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', () => {
+            log('🏁 Test page loaded');
+            updateExtensionStatus();
+            
+            // Set up the simulated livestream
+            setTimeout(simulateLivestream, 1000);
+            
+            // Log media elements found
+            const videos = document.querySelectorAll('video').length;
+            const audios = document.querySelectorAll('audio').length;
+            log(`📊 Found ${videos} video elements and ${audios} audio elements`);
+        });
+
+        // Monitor for extension events
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type && event.data.type.startsWith('UME_')) {
+                log(`📨 Extension event: ${event.data.type}`);
+            }
+        });
+    </script>
+</body>
+</html>

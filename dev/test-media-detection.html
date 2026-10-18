@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UME - Media Detection Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-weight: bold; 
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #b8daff; }
+        video { width: 100%; max-width: 400px; margin: 10px 0; }
+        button { 
+            padding: 10px 20px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 5px; 
+            background: #007bff; 
+            color: white; 
+            cursor: pointer; 
+        }
+        button:hover { background: #0056b3; }
+        .log { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            border-radius: 5px; 
+            padding: 10px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            max-height: 200px; 
+            overflow-y: auto; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 UME Media Detection Test</h1>
+        <p>This page tests the UME extension's ability to detect media that's already playing when a tab loads.</p>
+
+        <div class="test-section">
+            <h3>Test Video (Auto-play)</h3>
+            <video id="autoVideo" controls autoplay muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p><strong>Expected:</strong> Extension should detect this auto-playing video immediately</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Manual Test Video</h3>
+            <video id="manualVideo" controls muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <br>
+            <button onclick="playManualVideo()">Play Manual Video</button>
+            <button onclick="pauseManualVideo()">Pause Manual Video</button>
+            <p><strong>Test:</strong> Play this video manually and check if extension detects it</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Dynamic Video (Added after page load)</h3>
+            <div id="dynamicVideoContainer">
+                <button onclick="addDynamicVideo()">Add Playing Video Dynamically</button>
+            </div>
+            <p><strong>Test:</strong> This tests detection of videos added to DOM after page load</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Extension Status</h3>
+            <div id="extensionStatus" class="status info">Checking extension...</div>
+            <button onclick="checkExtensionStatus()">Refresh Status</button>
+            <button onclick="openBackgroundConsole()">Open Background Console</button>
+        </div>
+
+        <div class="test-section">
+            <h3>Console Log</h3>
+            <div id="logOutput" class="log">Initializing test...</div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 0;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logOutput = document.getElementById('logOutput');
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            console.log(`[UME-TEST] ${message}`);
+            
+            if (logOutput) {
+                logOutput.innerHTML += `<div style="color: ${type === 'error' ? 'red' : type === 'success' ? 'green' : 'black'}">${logEntry}</div>`;
+                logOutput.scrollTop = logOutput.scrollHeight;
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('logOutput').innerHTML = '';
+            logCount = 0;
+        }
+
+        async function checkExtensionStatus() {
+            const statusDiv = document.getElementById('extensionStatus');
+            
+            try {
+                if (typeof browser !== 'undefined' || typeof chrome !== 'undefined') {
+                    const api = typeof browser !== 'undefined' ? browser : chrome;
+                    
+                    // Try to send a message to background script
+                    const response = await api.runtime.sendMessage({ type: 'GET_ACTIVE_TABS' });
+                    
+                    if (response) {
+                        statusDiv.className = 'status success';
+                        statusDiv.innerHTML = `
+                            ✅ Extension Active<br>
+                            Tracked Tabs: ${response.totalTabs || 0}<br>
+                            Current Playing: ${response.currentPlaying ? 'Yes' : 'No'}<br>
+                            Extension Enabled: ${response.extensionEnabled ? 'Yes' : 'No'}
+                        `;
+                        log('Extension status check successful', 'success');
+                        log(`Tracked tabs: ${response.totalTabs}, Playing: ${response.currentPlaying}`, 'info');
+                    } else {
+                        throw new Error('No response from extension');
+                    }
+                } else {
+                    throw new Error('Extension APIs not available');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Extension Not Available<br>Error: ${error.message}`;
+                log(`Extension check failed: ${error.message}`, 'error');
+            }
+        }
+
+        function playManualVideo() {
+            const video = document.getElementById('manualVideo');
+            video.play().then(() => {
+                log('Manual video started playing', 'success');
+            }).catch(error => {
+                log(`Failed to play manual video: ${error.message}`, 'error');
+            });
+        }
+
+        function pauseManualVideo() {
+            const video = document.getElementById('manualVideo');
+            video.pause();
+            log('Manual video paused');
+        }
+
+        function addDynamicVideo() {
+            const container = document.getElementById('dynamicVideoContainer');
+            
+            // Remove existing dynamic video if any
+            const existing = container.querySelector('video');
+            if (existing) {
+                existing.remove();
+            }
+
+            const video = document.createElement('video');
+            video.id = 'dynamicVideo';
+            video.controls = true;
+            video.muted = true; // Required for autoplay
+            video.autoplay = true;
+            video.style.width = '100%';
+            video.style.maxWidth = '400px';
+            
+            const source = document.createElement('source');
+            source.src = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+            source.type = 'video/mp4';
+            
+            video.appendChild(source);
+            container.appendChild(video);
+
+            video.addEventListener('loadeddata', () => {
+                log('Dynamic video loaded and should be playing', 'info');
+            });
+
+            video.addEventListener('play', () => {
+                log('Dynamic video play event fired', 'success');
+            });
+
+            log('Dynamic video added to DOM with autoplay', 'info');
+        }
+
+        function openBackgroundConsole() {
+            log('Check browser console for [UME-BACKGROUND] and [UME-CONTENT] messages');
+            alert('Check the browser console (F12) for detailed UME extension logs:\n\n[UME-BACKGROUND] - Background script logs\n[UME-CONTENT] - Content script logs\n\nLook for messages about media detection and tab tracking.');
+        }
+
+        // Initialize page
+        window.addEventListener('load', async () => {
+            log('🏁 Media detection test page loaded');
+            
+            // Wait a moment for extension to load
+            setTimeout(() => {
+                checkExtensionStatus();
+            }, 500);
+
+            // Monitor video events
+            const autoVideo = document.getElementById('autoVideo');
+            
+            autoVideo.addEventListener('loadeddata', () => {
+                log(`Auto video loaded - paused: ${autoVideo.paused}, currentTime: ${autoVideo.currentTime.toFixed(2)}`);
+            });
+            
+            autoVideo.addEventListener('play', () => {
+                log('Auto video play event - extension should detect this!', 'success');
+            });
+            
+            autoVideo.addEventListener('pause', () => {
+                log('Auto video paused');
+            });
+
+            // Check video status periodically for first few seconds
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    const playing = !autoVideo.paused && autoVideo.currentTime > 0;
+                    log(`Video status check ${i + 1}: ${playing ? 'PLAYING' : 'NOT PLAYING'} (paused: ${autoVideo.paused}, time: ${autoVideo.currentTime.toFixed(2)})`, playing ? 'success' : 'info');
+                }, (i + 1) * 500);
+            }
+        });
+
+        // Listen for extension messages
+        if (typeof browser !== 'undefined' || typeof chrome !== 'undefined') {
+            const api = typeof browser !== 'undefined' ? browser : chrome;
+            
+            if (api.runtime && api.runtime.onMessage) {
+                api.runtime.onMessage.addListener((message, sender, sendResponse) => {
+                    log(`📨 Extension message: ${message.type}`, 'info');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "extensionName": {
+    "message": "UME Lite（媒体标签定位）",
+    "description": "扩展名称：显示在附加组件管理器与 AMO 上。"
+  },
+  "extensionDescription": {
+    "message": "列出所有正在播放视频/音乐的标签页并一键跳转；保留倍速与音量增强，且不会自动暂停后台播放。",
+    "description": "扩展简介：显示在附加组件管理器与 AMO 上。"
+  },
+  "actionTitle": {
+    "message": "UME Lite - 查看正在播放的标签页"
+  }
+}

@@ -1,0 +1,14 @@
+# Build artifacts — the signed/unsigned package is attached to GitHub Releases
+*.xpi
+*.zip
+
+# Tooling
+node_modules/
+web-ext-artifacts/
+__pycache__/
+*.pyc
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

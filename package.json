@@ -1,0 +1,36 @@
+{
+  "name": "firefox-ume-lite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Firefox extension: list every tab that is playing audio or video, jump straight to it, and never auto-pause background playback.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1TRYOUT/firefox-ume-lite.git"
+  },
+  "homepage": "https://github.com/1TRYOUT/firefox-ume-lite#readme",
+  "bugs": {
+    "url": "https://github.com/1TRYOUT/firefox-ume-lite/issues"
+  },
+  "keywords": [
+    "firefox-extension",
+    "webextension",
+    "manifest-v2",
+    "tabs",
+    "media",
+    "audio",
+    "video"
+  ],
+  "scripts": {
+    "verify": "python dev/verify-wiring.py",
+    "lint": "web-ext lint --ignore-files \"dev/**\" \".git/**\" \".github/**\" \"build-xpi.py\" \"package.json\" \"README*.md\" \"CHANGELOG.md\" \"LICENSE\"",
+    "build": "python build-xpi.py",
+    "start": "web-ext run"
+  },
+  "devDependencies": {
+    "web-ext": "^10.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

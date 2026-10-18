@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UME Lite - 正在播放的标签页</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <img src="../icons/icon-48.png" alt="Logo" class="header-logo">
+        </div>
+        <div class="header-info">
+          <h1 class="header-title">UME Lite</h1>
+          <div class="header-controls">
+            <div class="extension-toggle">
+              <label class="toggle-switch">
+                <input type="checkbox" id="extensionToggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="toggleLabel">Enabled</span>
+            </div>
+            <div class="theme-toggle" title="Toggle dark mode">
+              <label class="toggle-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="themeLabel">Light</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <div class="popup-content">
+      <div class="status-section">
+        <div class="status-indicator" id="statusIndicator">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">No active media</span>
+        </div>
+      </div>
+      
+      <div class="tabs-section" id="tabsSection">
+        <h2 class="section-title">Active Media Tabs</h2>
+        <div class="tabs-list" id="tabsList">
+          <!-- Tabs will be populated by JavaScript -->
+        </div>
+        <div class="no-tabs-message" id="noTabsMessage">
+          <div class="no-tabs-icon">📱</div>
+          <p>No tabs are currently playing media</p>
+          <small>Start playing a video or audio in any tab to see it here</small>
+        </div>
+      </div>
+      
+      <div class="controls-section">
+        <button class="control-button primary" id="pauseAllButton" title="Pause all media">
+          <span class="button-icon">⏸️</span>
+          <span class="button-text">Pause All</span>
+        </button>
+        <button class="control-button secondary" id="refreshButton" title="Refresh tab list">
+          <span class="button-icon">🔄</span>
+          <span class="button-text">Refresh</span>
+        </button>
+        <button class="control-button secondary" id="optionsButton" title="Open extension options">
+          <span class="button-icon">⚙️</span>
+          <span class="button-text">Options</span>
+        </button>
+      </div>
+      
+      <div class="speed-control-section" id="speedControlSection">
+        <h2 class="section-title">Current Speed</h2>
+        <div class="speed-info">
+          <span class="speed-label">Playback Speed:</span>
+          <span class="speed-value" id="currentSpeed">1.00x</span>
+        </div>
+        <div class="speed-instructions">
+          <p class="instruction-text">
+            <strong>Change speed using:</strong>
+          </p>
+          <ul class="instruction-list">
+            <li><strong>Keyboard shortcuts:</strong> S (slower), D (faster), R (reset)</li>
+            <li><strong>Video overlay:</strong> Hover over video for speed controls</li>
+            <li><strong>Options:</strong> Click the extension icon to access settings</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="volume-control-section" id="volumeControlSection">
+        <h2 class="section-title">Volume Booster</h2>
+        <div class="volume-info">
+          <span class="volume-label">Current Volume:</span>
+          <span class="volume-value" id="currentVolume">100%</span>
+        </div>
+        <div class="volume-controls">
+          <div class="volume-slider-container">
+            <input type="range" id="volumeSlider" class="volume-slider" 
+                   min="10" max="500" step="10" value="100">
+            <div class="volume-scale">
+              <span class="scale-mark">10%</span>
+              <span class="scale-mark">100%</span>
+              <span class="scale-mark">500%</span>
+            </div>
+          </div>
+          <div class="volume-buttons">
+            <button class="volume-btn" id="volumeDownBtn" title="Decrease volume (↓)">
+              <span class="volume-icon">🔉</span>
+              <span class="volume-text">-10%</span>
+            </button>
+            <button class="volume-btn" id="volumeResetBtn" title="Reset to 100%">
+              <span class="volume-icon">🔊</span>
+              <span class="volume-text">100%</span>
+            </button>
+            <button class="volume-btn" id="volumeUpBtn" title="Increase volume (↑)">
+              <span class="volume-icon">📢</span>
+              <span class="volume-text">+10%</span>
+            </button>
+          </div>
+        </div>
+        <div class="volume-instructions">
+          <p class="instruction-text">
+            <strong>⚠️ Volume Warning:</strong> High volumes can damage hearing!
+          </p>
+          <ul class="instruction-list">
+            <li><strong>Keyboard shortcuts:</strong> ↑ (louder), ↓ (quieter)</li>
+            <li><strong>Safety limit:</strong> Maximum 500% volume</li>
+            <li><strong>Per-domain:</strong> Settings saved for each website</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="popup-footer">
+      <div class="footer-info">
+        <small id="footerStatus">Extension active on all tabs</small>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 

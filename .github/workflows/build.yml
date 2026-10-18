@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Syntax check every runtime script
+        run: |
+          for f in background.js content.js options.js popup/popup.js; do
+            echo "node --check $f"
+            node --check "$f"
+          done
+
+      - name: Static wiring assertions
+        run: python3 dev/verify-wiring.py
+
+      - name: web-ext lint
+        run: |
+          npx --yes web-ext@10 lint \
+            --ignore-files "dev/**" ".git/**" ".github/**" \
+              "build-xpi.py" "package.json" "README*.md" "CHANGELOG.md" "LICENSE"
+
+      - name: Build xpi
+        run: python3 build-xpi.py
+
+      - name: Upload xpi
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-ume-lite-xpi
+          path: '*.xpi'
+          if-no-files-found: error

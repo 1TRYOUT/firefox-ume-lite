@@ -1,0 +1,13 @@
+{
+  "extensionName": {
+    "message": "UME Lite (Media Tab Finder)",
+    "description": "Extension name shown in the add-ons manager and on AMO."
+  },
+  "extensionDescription": {
+    "message": "List every tab that is playing audio or video and jump straight to it. Speed, volume and hotkeys retained; background playback is never auto-paused.",
+    "description": "Extension summary shown in the add-ons manager and on AMO."
+  },
+  "actionTitle": {
+    "message": "UME Lite - show tabs that are playing"
+  }
+}

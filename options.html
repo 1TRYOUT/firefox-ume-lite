@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UME Lite - 设置</title>
+   <link rel="stylesheet" href="options.v3.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <img src="icons/icon-48.png" alt="Logo" class="header-logo">
+          <h1 class="header-title">UME Lite</h1>
+        </div>
+        <div class="header-info">
+          <p class="header-subtitle">媒体标签定位 · 播放控制设置</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <nav class="sidebar">
+        <div class="nav-item active" data-section="general">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">General</span>
+        </div>
+        <div class="nav-item" data-section="shortcuts">
+          <span class="nav-icon">⌨️</span>
+          <span class="nav-text">Keyboard Shortcuts</span>
+        </div>
+        <div class="nav-item" data-section="appearance">
+          <span class="nav-icon">🎨</span>
+          <span class="nav-text">Appearance</span>
+        </div>
+        <div class="nav-item" data-section="volume">
+          <span class="nav-icon">🔊</span>
+          <span class="nav-text">Volume Booster</span>
+        </div>
+        <div class="nav-item" data-section="about">
+          <span class="nav-icon">ℹ️</span>
+          <span class="nav-text">About</span>
+        </div>
+          <div class="theme-toggle" style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
+            <span class="nav-icon">🌙</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="themeToggleOptions" />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="nav-text" id="themeLabelOptions">Light Mode</span>
+          </div>
+      </nav>
+
+      <main class="main-content">
+        <!-- General Settings Section -->
+        <section id="general" class="settings-section active">
+          <div class="section-header">
+            <h2>General Settings</h2>
+            <p>Configure basic extension behavior</p>
+          </div>
+          
+          <div class="settings-grid">
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="extensionEnabled" class="setting-label">Enable Extension</label>
+                <p class="setting-description">Turn the entire extension on or off</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="extensionEnabled" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="showController" class="setting-label">Show Visual Speed Controller</label>
+                <p class="setting-description">Display overlay controls when hovering over videos</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="showController" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="allowMultiplePlaying" class="setting-label">Allow Multiple Tabs to Play</label>
+                <p class="setting-description">Recommended. Leave other tabs playing in the background instead of auto-pausing them, so you can always find them in the popup list. Turn this off for upstream's "only one tab plays" behaviour.</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="allowMultiplePlaying" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="startHidden" class="setting-label">Hide Controller by Default</label>
+                <p class="setting-description">Keep controller hidden until manually shown</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="startHidden" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="rememberSpeed" class="setting-label">Remember Playback Speed</label>
+                <p class="setting-description">Save speed settings for individual videos</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="rememberSpeed" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="forceLastSavedSpeed" class="setting-label">Force last saved speed</label>
+                <p class="setting-description">Always apply the last saved speed to new videos</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="forceLastSavedSpeed" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="defaultSpeed" class="setting-label">Default playback speed</label>
+                <p class="setting-description">Default speed for videos (0.1x - 16x)</p>
+              </div>
+              <div class="setting-control">
+                <input type="number" id="defaultSpeed" min="0.1" max="16" step="0.1" value="1.0" class="speed-input" />
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="audioBoolean" class="setting-label">Enable on audio elements</label>
+                <p class="setting-description">Apply speed control to audio elements</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="audioBoolean" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="blacklist" class="setting-label">Website blacklist</label>
+                <p class="setting-description">Websites where the extension should be disabled (one per line)</p>
+              </div>
+              <div class="setting-control">
+                <textarea id="blacklist" rows="4" placeholder="www.example.com&#10;another-site.com" class="blacklist-textarea"></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Keyboard Shortcuts Section -->
+        <section id="shortcuts" class="settings-section">
+          <div class="section-header">
+            <h2>Keyboard Shortcuts</h2>
+            <p>Customize key bindings for speed control actions</p>
+          </div>
+
+          <div class="shortcuts-container">
+            <div class="shortcuts-list" id="customsContainer">
+              <!-- Keyboard shortcuts will be populated by JavaScript -->
+            </div>
+            <button id="addShortcut" class="btn btn-secondary">
+              <span class="btn-icon">➕</span>
+              Add New Shortcut
+            </button>
+          </div>
+        </section>
+
+        <!-- Appearance Section -->
+        <section id="appearance" class="settings-section">
+          <div class="section-header">
+            <h2>Appearance</h2>
+            <p>Customize the visual appearance of the speed controller</p>
+          </div>
+
+          <div class="settings-grid">
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="controllerOpacity" class="setting-label">Controller Opacity</label>
+                <p class="setting-description">Adjust transparency of the speed controller overlay</p>
+              </div>
+              <div class="setting-control">
+                <div class="slider-container">
+                  <input type="range" id="controllerOpacity" min="0.1" max="1" step="0.1" class="slider" />
+                  <span class="slider-value" id="opacityValue">0.3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Volume Booster Section -->
+        <section id="volume" class="settings-section">
+          <div class="section-header">
+            <h2>Volume Booster</h2>
+            <p>Enhance audio volume beyond browser limits</p>
+          </div>
+
+          <div class="settings-grid">
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="volumeBoosterEnabled" class="setting-label">Enable Volume Booster</label>
+                <p class="setting-description">Boost audio volume beyond 100% on supported websites</p>
+              </div>
+              <div class="setting-control">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="volumeBoosterEnabled" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="globalVolume" class="setting-label">Global Volume Multiplier</label>
+                <p class="setting-description">Default volume boost (1.0x - 5.0x)</p>
+              </div>
+              <div class="setting-control">
+                <input type="number" id="globalVolume" min="0.1" max="5.0" step="0.1" value="1.0" class="speed-input" />
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label for="volumeBoostLimit" class="setting-label">Maximum Volume Boost</label>
+                <p class="setting-description">Safety limit to prevent ear damage (1.0x - 5.0x)</p>
+              </div>
+              <div class="setting-control">
+                <input type="number" id="volumeBoostLimit" min="1.0" max="5.0" step="0.1" value="5.0" class="speed-input" />
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-label">⚠️ Safety Warning</label>
+                <p class="setting-description">High volume levels can damage your hearing. Use responsibly and ensure your audio equipment can handle the increased volume. The extension is not responsible for hearing damage or equipment damage.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="settings-section">
+          <div class="section-header">
+            <h2>About OneTab Media</h2>
+            <p>Information about this extension</p>
+          </div>
+
+          <div class="about-content">
+            <div class="feature-card">
+              <h3>🎯 One Tab Media</h3>
+              <p>Automatically pauses media in other tabs when you start playing media in a new tab, ensuring only one tab plays audio/video at a time.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3>⚡ Speed Control</h3>
+              <p>Control playback speed with keyboard shortcuts or the visual overlay that appears when you hover over videos. Features include speed adjustment, rewind/advance, and marker functionality just like the original Video Speed Controller.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3>🔊 Volume Booster</h3>
+              <p>Boost audio volume beyond browser limits with per-domain settings and safety controls. Remembers your volume preferences for each website.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3>🎵 HTML5 Compatible</h3>
+              <p>Works with all modern HTML5 audio and video players. If controls don't appear, the site may be using Flash content.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-actions">
+        <button id="saveSettings" class="btn btn-primary">
+          <span class="btn-icon">💾</span>
+          Save Settings
+        </button>
+        <button id="restoreDefaults" class="btn btn-secondary">
+          <span class="btn-icon">🔄</span>
+          Restore Defaults
+        </button>
+      </div>
+      <div id="status" class="status-message"></div>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html> 
